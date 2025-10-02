@@ -50,7 +50,7 @@ const deleteProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     const {id} = req.params
-    const {name} = req.body
+    const {type, name, categories, description, price, image, imageAlt, color, size, print, signed, cover} = req.body
     try {
         const productToUpdate = await Product.findOne({_id: id})
 
@@ -59,9 +59,21 @@ const updateProduct = async (req, res) => {
         }
 
         //valores a actualizar
-        productToUpdate.name = name
+        //actualizar solo los campos que se enviaron
+        if (type !== undefined) productToUpdate.type = type
+        if (name !== undefined) productToUpdate.name = name
+        if (categories !== undefined) productToUpdate.categories = categories
+        if (description !== undefined) productToUpdate.description = description
+        if (price !== undefined) productToUpdate.price = price
+        if (image !== undefined) productToUpdate.image = image
+        if (imageAlt !== undefined) productToUpdate.imageAlt = imageAlt
+        if (color !== undefined) productToUpdate.color = color
+        if (size !== undefined) productToUpdate.size = size
+        if (print !== undefined) productToUpdate.print = print
+        if (signed !== undefined) productToUpdate.signed = signed
+        if (cover !== undefined) productToUpdate.cover = cover
 
-        await productToUpdate.save({_id: id})
+        await productToUpdate.save()
         return res.status(200).send({message: "Producto actualizado", product: productToUpdate})
     } catch (error) {
         return res.status(501).send({message: "Hubo error ", error})

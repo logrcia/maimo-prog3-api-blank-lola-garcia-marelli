@@ -24,8 +24,30 @@ router.get("/", async (_req, res) => {
     return res.status(500).send({ message: "Hubo un error", error });
   }
 });
+
+// Obtener una categoría por slug o id - NUEVA RUTA
+router.get("/:key", async (req, res) => {
+  const { key } = req.params;
+  try {
+    const isId = key.match(/^[0-9a-fA-F]{24}$/);
+    const category = isId
+      ? await Category.findById(key)
+      : await Category.findOne({ slug: key });
+
+    if (!category) {
+      return res.status(404).send({ message: "Categoría no encontrada" });
+    }
+
+    return res.status(200).send({ 
+      message: "Categoría encontrada", 
+      category 
+    });
+  } catch (error) {
+    return res.status(500).send({ message: "Hubo un error", error });
+  }
+});
  
-// Productos por categoría (slug o id)  -> ya lo teníamos
+// Productos por categoría (slug o id)
 router.get("/:key/products", async (req, res) => {
   const { key } = req.params;
   try {
